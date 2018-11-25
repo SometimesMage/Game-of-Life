@@ -75,7 +75,7 @@ void Game_HandleEvents(Game *game)
     SDL_Event e;
     while(SDL_PollEvent(&e) != 0) {
         if(e.type == SDL_QUIT) {
-            game->quit = 1;
+            game->quit = SDL_TRUE;
         } else if (e.type == SDL_MOUSEBUTTONDOWN) {
             if(!game->play) {
                 Game_OnMouseDown(game);
@@ -88,7 +88,12 @@ void Game_HandleEvents(Game *game)
                     }
                     break;
                 case SDLK_k:
-                    game->play = !game->play;
+                    game->play = game->play ? SDL_FALSE : SDL_TRUE;
+                    break;
+                case SDLK_c:
+                    if(!game->play) {
+                        Cell_Clear(game->data);
+                    }
                     break;
             }
         }

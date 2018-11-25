@@ -17,6 +17,8 @@ void Cell_FlipAt(CellData *cellData, int x, int y);
 
 void Cell_SetAt(CellData *cellData, int x, int y, char alive);
 
-void Cell_Clean(CellData *data);
+void Cell_Clear(CellData *cellData);
+
+void Cell_Clean(CellData *cellData);
 
 #endif //__CELL_DATA_H__

@@ -38,6 +38,11 @@ void Cell_SetAt(CellData *cellData, int x, int y, char alive)
     cellData->data[(x + 1) + (y + 1) * (cellData->width + 2)] = alive;
 }
 
+void Cell_Clear(CellData *cellData)
+{
+    memset(cellData->data, 0, (cellData->width + 2) * (cellData->height +2) * sizeof(char));
+}
+
 void Cell_Clean(CellData *cellData)
 {
     free(cellData->data);
