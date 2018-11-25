@@ -13,7 +13,7 @@ int main(int argc, char **args)
         return 0;
     }*/
 
-    Game *game = Game_Init(80, 60, 8, cpuComputeFrame);
+    Game *game = Game_Init(80, 60, 8, 5, cpuComputeFrame);
 
     if(game) {
         Game_Start(game);

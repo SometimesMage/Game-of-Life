@@ -8,16 +8,19 @@ typedef struct game {
     int width;
     int height;
     int tileSize;
+    int fps;
     int lastFrameTime;
     int currentDelta;
-    char quit;
+    int currentPlayDelta;
+    SDL_bool quit;
+    SDL_bool play;
     CellData *data;
     SDL_Window *window;
     SDL_Surface *surface;
     void (*computeFrame)(struct game *game);
 } Game;
 
-Game* Game_Init(int width, int height, int tileSize, void (*computeFrame)(Game *game));
+Game* Game_Init(int width, int height, int tileSize, int fps, void (*computeFrame)(Game *game));
 
 void Game_Start(Game *game);
 

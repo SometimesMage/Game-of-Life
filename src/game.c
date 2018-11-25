@@ -8,16 +8,19 @@
 
 void printSDLError(const char *msg);
 
-Game* Game_Init(int width, int height, int tileSize, void (*computeFrame)(Game *game))
+Game* Game_Init(int width, int height, int tileSize, int fps, void (*computeFrame)(Game *game))
 {
     Game *game = (Game*) calloc(1, sizeof(Game));
     game->width = width;
     game->height = height;
     game->tileSize = tileSize;
+    game->fps = fps;
     game->computeFrame = computeFrame;
     game->lastFrameTime = 0;
     game->currentDelta = 0;
-    game->quit = 0;
+    game->currentPlayDelta = 0;
+    game->quit = SDL_FALSE;
+    game->play = SDL_FALSE;
 
     game->window = NULL;
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -50,10 +53,20 @@ void Game_Start(Game *game)
 
         Game_HandleEvents(game);
 
+        if(game->play) {
+            game->currentPlayDelta += currentFrameTime - game->lastFrameTime;
+            if(game->currentPlayDelta >= MILLS_PER_FRAME(game->fps)) {
+                game->computeFrame(game);
+                game->currentPlayDelta = 0;
+            }
+        }
+
         if(game->currentDelta >= MILLS_PER_FRAME(RENDER_FPS)) {
             Game_Render(game, game->currentDelta);
             game->currentDelta = 0;
         }
+
+        game->lastFrameTime = currentFrameTime;
     }
 }
 
@@ -64,11 +77,18 @@ void Game_HandleEvents(Game *game)
         if(e.type == SDL_QUIT) {
             game->quit = 1;
         } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-            Game_OnMouseDown(game);
+            if(!game->play) {
+                Game_OnMouseDown(game);
+            }
         } else if(e.type == SDL_KEYDOWN) {
             switch(e.key.keysym.sym) {
                 case SDLK_l:
-                    game->computeFrame(game);
+                    if(!game->play) {
+                        game->computeFrame(game);
+                    }
+                    break;
+                case SDLK_k:
+                    game->play = !game->play;
                     break;
             }
         }
@@ -78,7 +98,15 @@ void Game_HandleEvents(Game *game)
 void Game_Render(Game *game, int delta) 
 {
     //Clear surface
-    SDL_FillRect(game->surface, NULL, SDL_MapRGB(game->surface->format, 0x55, 0x55, 0x55));
+    int32_t color;
+
+    if(game->play) {
+        color = SDL_MapRGB(game->surface->format, 0x33, 0x33, 0x33);
+    } else {
+        color = SDL_MapRGB(game->surface->format, 0x55, 0x55, 0x55);
+    }
+
+    SDL_FillRect(game->surface, NULL, color);
 
     for(int y = 0; y < game->height; y++) {
         for(int x = 0; x < game->width; x++) {
