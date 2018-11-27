@@ -3,6 +3,7 @@
 
 #include "game.h"
 #include "cpu-frame-computer.h"
+#include "gpu-frame-computer.h"
 
 void printUsage();
 

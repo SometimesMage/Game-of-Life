@@ -1,4 +1,4 @@
-#ifndef __CeLL_DATA_H__
+#ifndef __CELL_DATA_H__
 #define __CELL_DATA_H__
 
 typedef struct cell_data {
