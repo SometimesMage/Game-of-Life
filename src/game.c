@@ -8,12 +8,12 @@
 
 void printSDLError(const char *msg);
 
-Game* Game_Init(int width, int height, int tileSize, int fps, void (*computeFrame)(Game *game))
+Game* Game_Init(int width, int height, int cellSize, int fps, void (*computeFrame)(Game *game))
 {
     Game *game = (Game*) calloc(1, sizeof(Game));
     game->width = width;
     game->height = height;
-    game->tileSize = tileSize;
+    game->cellSize = cellSize;
     game->fps = fps;
     game->computeFrame = computeFrame;
     game->lastFrameTime = 0;
@@ -29,7 +29,7 @@ Game* Game_Init(int width, int height, int tileSize, int fps, void (*computeFram
         return NULL;
     }
 
-    game->window = SDL_CreateWindow("Game of Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width * tileSize, height * tileSize, SDL_WINDOW_SHOWN);
+    game->window = SDL_CreateWindow("Game of Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width * cellSize, height * cellSize, SDL_WINDOW_SHOWN);
     if(game->window == NULL) {
         printSDLError("Window could not be created!");
         free(game);
@@ -62,7 +62,7 @@ void Game_Start(Game *game)
         }
 
         if(game->currentDelta >= MILLS_PER_FRAME(RENDER_FPS)) {
-            Game_Render(game, game->currentDelta);
+            Game_Render(game);
             game->currentDelta = 0;
         }
 
@@ -100,7 +100,7 @@ void Game_HandleEvents(Game *game)
     }
 }
 
-void Game_Render(Game *game, int delta) 
+void Game_Render(Game *game) 
 {
     //Clear surface
     int32_t color;
@@ -116,7 +116,7 @@ void Game_Render(Game *game, int delta)
     for(int y = 0; y < game->height; y++) {
         for(int x = 0; x < game->width; x++) {
             if(Cell_GetAt(game->data, x, y) == 1) {
-                SDL_Rect rect = {x * game->tileSize, y * game->tileSize, game->tileSize, game->tileSize};
+                SDL_Rect rect = {x * game->cellSize, y * game->cellSize, game->cellSize, game->cellSize};
                 SDL_FillRect(game->surface, &rect, SDL_MapRGB(game->surface->format, 0xFF, 0xFF, 0xFF));
             }
         }
@@ -129,7 +129,7 @@ void Game_OnMouseDown(Game *game)
 {
     int x, y;
     SDL_GetMouseState(&x, &y);
-    Cell_FlipAt(game->data, x/game->tileSize, y/game->tileSize);
+    Cell_FlipAt(game->data, x/game->cellSize, y/game->cellSize);
 }
 
 void Game_Clean(Game *game)

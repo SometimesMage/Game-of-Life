@@ -7,7 +7,7 @@
 typedef struct game {
     int width;
     int height;
-    int tileSize;
+    int cellSize;
     int fps;
     int lastFrameTime;
     int currentDelta;
@@ -20,13 +20,13 @@ typedef struct game {
     void (*computeFrame)(struct game *game);
 } Game;
 
-Game* Game_Init(int width, int height, int tileSize, int fps, void (*computeFrame)(Game *game));
+Game* Game_Init(int width, int height, int cellSize, int fps, void (*computeFrame)(Game *game));
 
 void Game_Start(Game *game);
 
 void Game_HandleEvents(Game *game);
 
-void Game_Render(Game *game, int delta);
+void Game_Render(Game *game);
 
 void Game_OnMouseDown(Game *game);
 
