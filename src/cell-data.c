@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "cell-data.h"
 
@@ -9,6 +10,34 @@ CellData* Cell_Init(int width, int height)
     cellData->width = width;
     cellData->height = height;
     cellData->data = (char*) calloc((width + 2) * (height + 2), sizeof(char));
+    return cellData;
+}
+
+CellData* Cell_InitWithFile(char *fileName)
+{
+    FILE *file = fopen(fileName, "r");
+
+    int width, height;
+
+    fscanf(file, "%d", &width);
+    fscanf(file, "%d", &height);
+
+    CellData *cellData = (CellData*) calloc(1, sizeof(CellData));
+    cellData->width = width;
+    cellData->height = height;
+    cellData->data = (char*) calloc((width + 2) * (height + 2), sizeof(char));
+
+    int x, y;
+    int data;
+
+    for(y = 0; y < height; y++) {
+        for(x = 0; x < width; x++) {
+            fscanf(file, "%d", &data);
+            Cell_SetAt(cellData, x, y, data);
+        }
+    }
+
+    fclose(file);
     return cellData;
 }
 
@@ -36,6 +65,23 @@ void Cell_FlipAt(CellData *cellData, int x, int y)
 void Cell_SetAt(CellData *cellData, int x, int y, char alive)
 {
     cellData->data[(x + 1) + (y + 1) * (cellData->width + 2)] = alive;
+}
+
+void Cell_Export(CellData *cellData)
+{
+    FILE *file = fopen("export.gol", "w");
+
+    fprintf(file, "%d %d\n", cellData->width, cellData->height);
+
+    int x, y;
+    for(y = 0; y < cellData->height; y++) {
+        for(x = 0; x < cellData->width; x++) {
+            fprintf(file, "%d ", Cell_GetAt(cellData, x, y));
+        }
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
 }
 
 void Cell_Clear(CellData *cellData)

@@ -45,6 +45,43 @@ Game* Game_Init(int width, int height, int cellSize, int fps, double (*computeFr
     return game;
 }
 
+Game* Game_InitWithFile(char *fileName, int cellSize, int fps, double (*computeFrame)(Game *game))
+{
+    Game *game = (Game*) calloc(1, sizeof(Game));
+    game->data = Cell_InitWithFile(fileName);
+    game->width = game->data->width;
+    game->height = game->data->height;
+    game->cellSize = cellSize;
+    game->fps = fps;
+    game->computeFrame = computeFrame;
+    game->lastFrameTime = 0;
+    game->currentDelta = 0;
+    game->currentPlayDelta = 0;
+    game->totalComputedFrames = 0;
+    game->totalComputeTime = 0.0f;
+    game->quit = SDL_FALSE;
+    game->play = SDL_FALSE;
+
+    game->window = NULL;
+    if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printSDLError("SDL could not initialize!");
+        free(game);
+        return NULL;
+    }
+
+    game->window = SDL_CreateWindow("Game of Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, game->width * cellSize, game->height * cellSize, SDL_WINDOW_SHOWN);
+    if(game->window == NULL) {
+        printSDLError("Window could not be created!");
+        free(game);
+        SDL_Quit();
+        return NULL;
+    }
+
+    game->surface = SDL_GetWindowSurface(game->window);
+
+    return game;
+}
+
 void Game_Start(Game *game)
 {
     game->lastFrameTime = SDL_GetTicks();
@@ -102,6 +139,10 @@ void Game_HandleEvents(Game *game)
                     if(!game->play) {
                         Cell_Clear(game->data);
                     }
+                    break;
+                case SDLK_e:
+                    Cell_Export(game->data);
+                    printf("Game data exported!\n");
                     break;
             }
         }

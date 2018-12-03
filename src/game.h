@@ -24,6 +24,8 @@ typedef struct game {
 
 Game* Game_Init(int width, int height, int cellSize, int fps, double (*computeFrame)(Game *game));
 
+Game* Game_InitWithFile(char *fileName, int cellSize, int fps, double (*computeFrame)(Game *game));
+
 void Game_Start(Game *game);
 
 void Game_HandleEvents(Game *game);
