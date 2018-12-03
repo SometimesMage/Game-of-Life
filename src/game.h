@@ -28,6 +28,8 @@ Game* Game_InitWithFile(char *fileName, int cellSize, int fps, double (*computeF
 
 void Game_Start(Game *game);
 
+void Game_StartFrames(Game *game, int frames);
+
 void Game_HandleEvents(Game *game);
 
 void Game_Render(Game *game);

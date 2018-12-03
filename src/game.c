@@ -114,6 +114,34 @@ void Game_Start(Game *game)
     printf("Avg. Compute Time: %f\n", game->totalComputeTime / game->totalComputedFrames);
 }
 
+void Game_StartFrames(Game *game, int frames)
+{
+    int frame = 0;
+    game->play = SDL_TRUE;
+    game->lastFrameTime = SDL_GetTicks();
+
+    while(frame < frames) {
+        int currentFrameTime = SDL_GetTicks();
+        game->currentDelta += currentFrameTime - game->lastFrameTime;
+
+        if(game->currentDelta >= MILLS_PER_FRAME(game->fps)) { 
+            game->totalComputedFrames++;
+            game->totalComputeTime += game->computeFrame(game);
+            Game_Render(game);
+            game->currentDelta = 0;
+            frame++;
+        }
+
+        game->lastFrameTime = currentFrameTime;
+    }
+
+    printf("Total Compute Time %f\n", game->totalComputeTime);
+    printf("Total Frames Played: %d\n", game->totalComputedFrames);
+    printf("Avg. Compute Time: %f\n", game->totalComputeTime / game->totalComputedFrames);
+
+    Cell_Export(game->data);
+}
+
 void Game_HandleEvents(Game *game)
 {
     SDL_Event e;
@@ -143,6 +171,12 @@ void Game_HandleEvents(Game *game)
                 case SDLK_e:
                     Cell_Export(game->data);
                     printf("Game data exported!\n");
+                    break;
+                case SDLK_MINUS:
+                    game->fps = game->fps - 1;
+                    break;
+                case SDLK_EQUALS:
+                    game->fps = game->fps + 1;
                     break;
             }
         }
