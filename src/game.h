@@ -12,15 +12,17 @@ typedef struct game {
     int lastFrameTime;
     int currentDelta;
     int currentPlayDelta;
+    int totalComputedFrames;
+    double totalComputeTime;
     SDL_bool quit;
     SDL_bool play;
     CellData *data;
     SDL_Window *window;
     SDL_Surface *surface;
-    void (*computeFrame)(struct game *game);
+    double (*computeFrame)(struct game *game);
 } Game;
 
-Game* Game_Init(int width, int height, int cellSize, int fps, void (*computeFrame)(Game *game));
+Game* Game_Init(int width, int height, int cellSize, int fps, double (*computeFrame)(Game *game));
 
 void Game_Start(Game *game);
 

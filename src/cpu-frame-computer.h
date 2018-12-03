@@ -3,6 +3,6 @@
 
 #include "game.h"
 
-void cpuComputeFrame(Game *game);
+double cpuComputeFrame(Game *game);
 
 #endif //__CPU_FRAME_COMPUTER_H__

@@ -1,9 +1,12 @@
 #include "cpu-frame-computer.h"
+#include "timing.h"
 
-void cpuComputeFrame(Game *game)
+double cpuComputeFrame(Game *game)
 {
     CellData *afterData = Cell_Init(game->width, game->height);
 
+    double startTime = currentTime();
+    
     for(int y = 0; y < game->height; y++) {
         for(int x = 0; x < game->width; x++) {
             int sum = 0;
@@ -24,6 +27,10 @@ void cpuComputeFrame(Game *game)
         }
     }
 
+    double endTime = currentTime();
+
     Cell_Copy(game->data, afterData);
     Cell_Clean(afterData);
+
+    return endTime - startTime;
 }

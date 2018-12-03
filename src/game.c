@@ -8,7 +8,7 @@
 
 void printSDLError(const char *msg);
 
-Game* Game_Init(int width, int height, int cellSize, int fps, void (*computeFrame)(Game *game))
+Game* Game_Init(int width, int height, int cellSize, int fps, double (*computeFrame)(Game *game))
 {
     Game *game = (Game*) calloc(1, sizeof(Game));
     game->width = width;
@@ -19,6 +19,8 @@ Game* Game_Init(int width, int height, int cellSize, int fps, void (*computeFram
     game->lastFrameTime = 0;
     game->currentDelta = 0;
     game->currentPlayDelta = 0;
+    game->totalComputedFrames = 0;
+    game->totalComputeTime = 0.0f;
     game->quit = SDL_FALSE;
     game->play = SDL_FALSE;
 
@@ -56,7 +58,8 @@ void Game_Start(Game *game)
         if(game->play) {
             game->currentPlayDelta += currentFrameTime - game->lastFrameTime;
             if(game->currentPlayDelta >= MILLS_PER_FRAME(game->fps)) {
-                game->computeFrame(game);
+                game->totalComputedFrames++;
+                game->totalComputeTime += game->computeFrame(game);
                 game->currentPlayDelta = 0;
             }
         }
@@ -68,6 +71,10 @@ void Game_Start(Game *game)
 
         game->lastFrameTime = currentFrameTime;
     }
+
+    printf("Total Compute Time %f\n", game->totalComputeTime);
+    printf("Total Frames Played: %d\n", game->totalComputedFrames);
+    printf("Avg. Compute Time: %f\n", game->totalComputeTime / game->totalComputedFrames);
 }
 
 void Game_HandleEvents(Game *game)
@@ -84,7 +91,8 @@ void Game_HandleEvents(Game *game)
             switch(e.key.keysym.sym) {
                 case SDLK_l:
                     if(!game->play) {
-                        game->computeFrame(game);
+                        game->totalComputeTime += game->computeFrame(game);
+                        game->totalComputedFrames++;
                     }
                     break;
                 case SDLK_k:
