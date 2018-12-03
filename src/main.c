@@ -231,4 +231,6 @@ void printUsage()
     printf("\t'k' : Play/pause game\n");
     printf("\t'e' : Export out game board to file name 'export.gol'\n");
     printf("\t'c' : Clear game board\n");
+    printf("\t'-' : Decreases the FPS of computing a generation\n");
+    printf("\t'=' : Increases the FPS of computing a generation\n");
 }
