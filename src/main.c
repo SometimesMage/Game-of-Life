@@ -8,6 +8,7 @@
 
 void printUsage();
 void setupCE(int argc, char **args);
+void setupGE(int argc, char **args);
 
 int main(int argc, char **args)
 {
@@ -20,6 +21,8 @@ int main(int argc, char **args)
         printUsage();
     } else if(strcmp("-ce", args[1]) == 0) {
         setupCE(argc, args);
+    } else if(strcmp("-ge", args[1]) == 0) {
+        setupGE(argc, args);
     }
 
     return 0;
@@ -43,6 +46,34 @@ void setupCE(int argc, char **args)
     }
 
     Game *game = Game_Init(width, height, cell_size, 5, cpuComputeFrame);
+
+    if(!game) {
+        printf("Error: Coulnd't initialize game!");
+        exit(0);
+    }
+
+    Game_Start(game);
+    Game_Clean(game);
+}
+
+void setupGE(int argc, char **args) {
+    if(argc < 6) {
+        printUsage();
+        exit(0);
+    }
+
+    int width = atoi(args[2]);
+    int height = atoi(args[3]);
+    int cell_size = atoi(args[4]);
+    BLOCK_SIZE = atoi(args[5]);
+
+    if(!width || !height || !cell_size && !BLOCK_SIZE) {
+        printf("Error: Invalid parameter!\n");
+        printUsage();
+        exit(0);
+    }
+
+    Game *game = Game_Init(width, height, cell_size, 5, gpuComputeFrame);
 
     if(!game) {
         printf("Error: Coulnd't initialize game!");

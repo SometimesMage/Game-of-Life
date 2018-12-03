@@ -18,10 +18,11 @@ void gpuComputeFrame(Game *game)
     checkCudaError(cudaMemset(d_out, 0, (game->width + 2) * (game->height + 2) * sizeof(char)));
     checkCudaError(cudaMemcpy(d_in, game->data->data, (game->width + 2) * (game->height + 2) * sizeof(char), cudaMemcpyHostToDevice));
 
-    dim3 block(128, 1, 1);
-    dim3 grid(ceil(game->width/(float)128), game->height, 1);
+    dim3 block(BLOCK_SIZE, BLOCK_SIZE, 1);
+    dim3 grid(ceil(game->width/(float)BLOCK_SIZE), ceil(game->height/(float)BLOCK_SIZE), 1);
+    int sharedMemorySize = (BLOCK_SIZE + 2) * (BLOCK_SIZE * 2) * sizeof(char);
 
-    computeFrame<<<grid, block>>>(d_in, d_out, game->width, game->height);
+    computeFrame2<<<grid, block, sharedMemorySize>>>(d_in, d_out, game->width, game->height);
     checkCudaError(cudaGetLastError());
 
     checkCudaError(cudaMemcpy(game->data->data, d_out, (game->width + 2) * (game->height + 2) * sizeof(char), cudaMemcpyDeviceToHost));

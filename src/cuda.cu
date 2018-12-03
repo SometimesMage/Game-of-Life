@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "cuda.h"
 
 __global__ void computeFrame(char *in, char *out, int width, int height)
@@ -38,46 +39,46 @@ __global__ void computeFrame2(char *in, char *out, int width, int height)
         g_x += 1; g_y += 1; t_x += 1; t_y += 1; //Offset by one since there is a border buffer
 
         //Base Cell
-        s_in[t_x + t_y * (blockDim.x + 2)] = in[g_x + g_y * (width * 2)];
+        s_in[t_x + t_y * (blockDim.x + 2)] = in[g_x + g_y * (width + 2)];
 
         //Upper Cell
         if(t_y == 1) {
-            s_in[t_x + (t_y - 1) * (blockDim.x + 2)] = in[g_x + (g_y - 1) * (width * 2)];
+            s_in[t_x + (t_y - 1) * (blockDim.x + 2)] = in[g_x + (g_y - 1) * (width + 2)];
         }
 
         //Lower Cell
-        if(t_y == blockDim.y || g_y == height - 1) {
-            s_in[t_x + (t_y + 1) * (blockDim.x + 2)] = in[g_x + (g_y + 1) * (width * 2)];
+        if(t_y == blockDim.y || g_y == height) {
+            s_in[t_x + (t_y + 1) * (blockDim.x + 2)] = in[g_x + (g_y + 1) * (width + 2)];
         }
 
         //Left Cell
         if(t_x == 1) {
-            s_in[(t_x - 1) + t_y * (blockDim.x + 2)] = in[(g_x - 1) + g_y * (width * 2)];
+            s_in[(t_x - 1) + t_y * (blockDim.x + 2)] = in[(g_x - 1) + g_y * (width + 2)];
         }
 
         //Rigth Cell
-        if(t_x == blockDim.x || g_x == width - 1) {
-            s_in[(t_x + 1) + t_y * (blockDim.x + 2)] = in[(g_x + 1) + g_y * (width * 2)];
+        if(t_x == blockDim.x || g_x == width) {
+            s_in[(t_x + 1) + t_y * (blockDim.x + 2)] = in[(g_x + 1) + g_y * (width + 2)];
         }
 
         //Upper-Left Corner
         if(t_x == 1 && t_y == 1) {
-            s_in[(t_x - 1) + (t_y - 1) * (blockDim.x + 2)] = in[(g_x - 1) + (g_y - 1) * (width * 2)];
+            s_in[(t_x - 1) + (t_y - 1) * (blockDim.x + 2)] = in[(g_x - 1) + (g_y - 1) * (width + 2)];
         }
 
         //Lower-Left Corner
-        if(t_x == 1 && ((t_y == blockDim.y || g_y == height - 1))) {
-            s_in[(t_x - 1) + (t_y + 1) * (blockDim.x + 2)] = in[(g_x - 1) + (g_y + 1) * (width * 2)];
+        if(t_x == 1 && ((t_y == blockDim.y || g_y == height))) {
+            s_in[(t_x - 1) + (t_y + 1) * (blockDim.x + 2)] = in[(g_x - 1) + (g_y + 1) * (width + 2)];
         }
 
         //Upper-Right Corner
-        if((t_x == blockDim.x || g_x == width - 1) && t_y == 1) {
-            s_in[(t_x + 1) + (t_y - 1) * (blockDim.x + 2)] = in[(g_x + 1) + (g_y - 1) * (width * 2)];
+        if((t_x == blockDim.x || g_x == width) && t_y == 1) {
+            s_in[(t_x + 1) + (t_y - 1) * (blockDim.x + 2)] = in[(g_x + 1) + (g_y - 1) * (width + 2)];
         }
 
         //Lower-Right Corner
-        if((t_x == blockDim.x || g_x == width - 1) && (t_y == blockDim.y || g_y == height - 1)) {
-            s_in[(t_x + 1) + (t_y + 1) * (blockDim.x + 2)] = in[(g_x + 1) + (g_y + 1) * (width * 2)];
+        if((t_x == blockDim.x || g_x == width) && (t_y == blockDim.y || g_y == height)) {
+            s_in[(t_x + 1) + (t_y + 1) * (blockDim.x + 2)] = in[(g_x + 1) + (g_y + 1) * (width + 2)];
         }
 
         __syncthreads();
