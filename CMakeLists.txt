@@ -9,3 +9,5 @@ set(SOURCE_FILES src/main.c src/game.c src/cell-data.c src/cpu-frame-computer.c 
 
 add_executable(project ${SOURCE_FILES})
 target_link_libraries(project ${SDL2_LIBRARIES})
+
+add_executable(generate src/generator.c)

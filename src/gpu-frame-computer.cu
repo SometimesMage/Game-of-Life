@@ -23,9 +23,8 @@ double gpuComputeFrame(Game *game)
     int sharedMemorySize = (BLOCK_SIZE + 2) * (BLOCK_SIZE * 2) * sizeof(char);
 
     double startTime = currentTime();
-
     computeFrame2<<<grid, block, sharedMemorySize>>>(d_in, d_out, game->width, game->height);
-
+    cudaDeviceSynchronize();
     double endTime = currentTime();
 
     checkCudaError(cudaGetLastError(), __FILE__, __LINE__);

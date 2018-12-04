@@ -118,21 +118,12 @@ void Game_StartFrames(Game *game, int frames)
 {
     int frame = 0;
     game->play = SDL_TRUE;
-    game->lastFrameTime = SDL_GetTicks();
 
     while(frame < frames) {
-        int currentFrameTime = SDL_GetTicks();
-        game->currentDelta += currentFrameTime - game->lastFrameTime;
-
-        if(game->currentDelta >= MILLS_PER_FRAME(game->fps)) { 
-            game->totalComputedFrames++;
-            game->totalComputeTime += game->computeFrame(game);
-            Game_Render(game);
-            game->currentDelta = 0;
-            frame++;
-        }
-
-        game->lastFrameTime = currentFrameTime;
+        game->totalComputedFrames++;
+        game->totalComputeTime += game->computeFrame(game);
+        Game_Render(game);
+        frame++;
     }
 
     printf("Total Compute Time %f\n", game->totalComputeTime);

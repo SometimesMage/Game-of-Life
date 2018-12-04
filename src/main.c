@@ -166,7 +166,7 @@ void setupCT(int argc, char **args)
         exit(0);
     }
 
-    Game *game = Game_InitWithFile(args[2], cell_size, frames/5, cpuComputeFrame);
+    Game *game = Game_InitWithFile(args[2], cell_size, 5, cpuComputeFrame);
 
     if(!game) {
         printf("Error: Coulnd't initialize game!\n");
@@ -194,7 +194,7 @@ void setupGT(int argc, char **args)
         exit(0);
     }
 
-    Game *game = Game_InitWithFile(args[2], cell_size, frames/5, gpuComputeFrame);
+    Game *game = Game_InitWithFile(args[2], cell_size, 5, gpuComputeFrame);
 
     if(!game) {
         printf("Error: Coulnd't initialize game!\n");
@@ -220,7 +220,7 @@ void printUsage()
     printf("\t-gf : Open and edit, compute via GPU\n");
     printf("\t-ct : Open and time, compute via CPU\n");
     printf("\t-gt : Open and time, compute via GPU\n");
-    printf("\t-h : Prints out this messages\n");
+    printf("\t-h  : Prints out this messages\n");
     printf("\nParameters:\n\twidth : The amount of cells in the x direction\n");
     printf("\theight : The amount of cells in the y direction\n");
     printf("\tcell_size : The amount of pixels a cell takes up on the screen\n");
