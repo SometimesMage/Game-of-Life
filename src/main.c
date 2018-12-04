@@ -218,8 +218,8 @@ void printUsage()
     printf("\t-ge : Edit, compute via GPU\n");
     printf("\t-cf : Open and edit, compute via CPU\n");
     printf("\t-gf : Open and edit, compute via GPU\n");
-    printf("\t-ct : Open and time, compute via CPU\n");
-    printf("\t-gt : Open and time, compute via GPU\n");
+    printf("\t-ct : Open and time, compute via CPU, output end result\n");
+    printf("\t-gt : Open and time, compute via GPU, output end result\n");
     printf("\t-h  : Prints out this messages\n");
     printf("\nParameters:\n\twidth : The amount of cells in the x direction\n");
     printf("\theight : The amount of cells in the y direction\n");
